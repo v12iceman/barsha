@@ -8,7 +8,7 @@
 
 body {
     overflow: hidden;
-    background: black;
+    background: #0a0005;
     font-family: 'Georgia', serif;
     color: white;
     text-align: center;
@@ -28,25 +28,23 @@ canvas {
     opacity: 0;
     transition: opacity 1s ease;
     z-index: 2;
-    color: #ff4d6d;
+    color: #d4607a;
     text-shadow:
-        0 0 10px #ff4d6d,
-        0 0 30px #ff1a4d,
-        0 0 60px #ff1a4d,
-        0 0 100px #cc0033;
+        0 0 8px #c0506888,
+        0 0 20px #99334455;
     letter-spacing: 4px;
 }
 
 .star {
     position: absolute;
     border-radius: 50%;
-    background: white;
+    background: #ccb8c0;
     animation: twinkle 2s infinite alternate;
 }
 
 @keyframes twinkle {
     from { opacity: 0.1; transform: scale(0.8); }
-    to   { opacity: 1;   transform: scale(1.2); }
+    to   { opacity: 0.6; transform: scale(1.1); }
 }
 
 .heart {
@@ -54,12 +52,13 @@ canvas {
     animation: floatHeart linear forwards;
     pointer-events: none;
     z-index: 1;
+    filter: saturate(0.5) brightness(0.8);
 }
 
 @keyframes floatHeart {
-    0%   { transform: translateY(0) scale(1) rotate(0deg);   opacity: 1; }
-    50%  { opacity: 0.8; }
-    100% { transform: translateY(-110vh) scale(1.6) rotate(20deg); opacity: 0; }
+    0%   { transform: translateY(0) scale(1);   opacity: 0.7; }
+    50%  { opacity: 0.5; }
+    100% { transform: translateY(-110vh) scale(1.4); opacity: 0; }
 }
 
 #openBookBtn {
@@ -68,51 +67,46 @@ canvas {
     left: 50%;
     transform: translateX(-50%);
     padding: 14px 32px;
-    font-size: 1.2em;
+    font-size: 1.1em;
     font-family: 'Georgia', serif;
-    background: linear-gradient(135deg, #ff4d6d, #cc0044);
-    border: none;
+    background: #7a2035;
+    border: 1px solid #aa4060;
     border-radius: 50px;
-    color: white;
+    color: #f0c0cc;
     cursor: pointer;
     display: none;
     z-index: 3;
-    box-shadow: 0 0 20px #ff4d6d88, 0 0 40px #ff1a4d44;
-    animation: pulse 2s infinite;
     letter-spacing: 1px;
+    transition: background 0.3s;
 }
 
-@keyframes pulse {
-    0%, 100% { box-shadow: 0 0 20px #ff4d6d88, 0 0 40px #ff1a4d44; }
-    50%       { box-shadow: 0 0 40px #ff4d6dcc, 0 0 80px #ff1a4d88; }
+#openBookBtn:hover {
+    background: #9a2a45;
 }
 
-/* Overlay */
 #overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.75);
+    background: rgba(0,0,0,0.8);
     z-index: 4;
     display: none;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(3px);
 }
 
 #overlay.open {
     display: flex;
 }
 
-/* Book */
 #book {
     width: 320px;
-    background: linear-gradient(160deg, #fff8f9, #ffe0e8);
-    color: #1a0010;
+    background: #1a0810;
+    color: #e8c0cc;
+    border: 1px solid #6a2840;
     border-radius: 16px;
     padding: 32px 28px;
-    box-shadow:
-        0 0 40px #ff4d6d88,
-        0 8px 40px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 30px rgba(180,60,90,0.15);
     transform: scale(0.5);
     opacity: 0;
     transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s ease;
@@ -126,42 +120,39 @@ canvas {
 }
 
 #book h2 {
-    font-size: 1.6em;
-    color: #cc0044;
+    font-size: 1.5em;
+    color: #d4607a;
     margin-bottom: 16px;
-    text-shadow: 0 0 8px #ff4d6d44;
 }
 
 #book p {
     font-size: 1.05em;
     line-height: 1.8;
-    color: #3a0020;
+    color: #c09098;
 }
 
 #book .divider {
     width: 60px;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #ff4d6d, transparent);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #7a3050, transparent);
     margin: 16px auto;
-    border-radius: 2px;
 }
 
 #closeBook {
     position: absolute;
     top: 12px; right: 14px;
     cursor: pointer;
-    font-size: 1.1em;
-    color: #cc0044;
+    font-size: 1em;
+    color: #a06070;
     opacity: 0.6;
     transition: opacity 0.2s;
 }
 #closeBook:hover { opacity: 1; }
 
-/* Firework sparks */
 .spark {
     position: absolute;
-    width: 4px;
-    height: 4px;
+    width: 3px;
+    height: 3px;
     border-radius: 50%;
     pointer-events: none;
     z-index: 2;
@@ -169,7 +160,7 @@ canvas {
 }
 
 @keyframes sparkFly {
-    0%   { transform: translate(0,0) scale(1); opacity: 1; }
+    0%   { transform: translate(0,0) scale(1); opacity: 0.8; }
     100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
 }
 </style>
@@ -178,22 +169,19 @@ canvas {
 <body>
 <canvas id="matrix"></canvas>
 <div id="text"></div>
-<button id="openBookBtn">Open </button>
+<button id="openBookBtn">Open 💌</button>
 
 <div id="overlay">
     <div id="book">
         <div id="closeBook">✕</div>
-        <h2>For You ❤️</h2>
+        <h2>haha</h2>
         <div class="divider"></div>
-        <p>
-            👀👀
-        </p>
+        <p>👀i love you to the moon and back bb👀</p>
         <div class="divider"></div>
     </div>
 </div>
 
 <script>
-// ===== MATRIX =====
 const canvas = document.getElementById("matrix");
 const ctx = canvas.getContext("2d");
 
@@ -204,58 +192,55 @@ function resize() {
 resize();
 window.addEventListener("resize", resize);
 
-const words = ["BB", "❤️", "🎂", "✨"];
-const fontSize = 14;
-let columns = Math.floor(canvas.width / fontSize);
-let drops = Array.from({ length: columns }, () => Math.random() * 50);
+const words = ["BB", "❤️", "✨"];
+const fontSize = 12;
+let drops = Array.from({ length: Math.floor(canvas.width / fontSize) }, () => Math.random() * 50);
 let matrixRunning = true;
 
 function drawMatrix() {
     if (!matrixRunning) return;
-    ctx.fillStyle = "rgba(0,0,0,0.06)";
+    ctx.fillStyle = "rgba(10,0,5,0.08)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.font = fontSize + "px monospace";
 
     for (let i = 0; i < drops.length; i++) {
-        const colors = ["#ff4d6d", "#ff1a4d", "#ff80a0", "#ffaabb"];
+        // Muted, darker pinks
+        const colors = ["#8a3048", "#6a2035", "#aa5068", "#7a3550"];
         ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
-        const text = words[Math.floor(Math.random() * words.length)];
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        ctx.fillText(words[Math.floor(Math.random() * words.length)], i * fontSize, drops[i] * fontSize);
         if (drops[i] * fontSize > canvas.height && Math.random() > 0.95) drops[i] = 0;
         drops[i]++;
     }
 }
 
-setInterval(drawMatrix, 45);
+setInterval(drawMatrix, 50);
 
-// ===== STARS =====
 function createStars() {
-    for (let i = 0; i < 160; i++) {
+    for (let i = 0; i < 100; i++) {
         const star = document.createElement("div");
         star.className = "star";
-        const size = Math.random() * 2.5 + 0.5;
+        const size = Math.random() * 1.8 + 0.4;
         star.style.cssText = `
             top: ${Math.random() * 100}vh;
             left: ${Math.random() * 100}vw;
-            width: ${size}px;
-            height: ${size}px;
+            width: ${size}px; height: ${size}px;
             animation-delay: ${Math.random() * 3}s;
-            animation-duration: ${1.5 + Math.random() * 2}s;
+            animation-duration: ${2 + Math.random() * 2}s;
         `;
         document.body.appendChild(star);
     }
 }
 
-// ===== HEARTS =====
-const heartEmojis = ["❤️", "🩷", "💕", "💖", "💗", "💓"];
+// Only simple hearts, desaturated
+const heartEmojis = ["❤️", "🩷", "💗"];
 
 function createHearts() {
     setInterval(() => {
         const heart = document.createElement("div");
         heart.className = "heart";
         heart.innerHTML = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
-        const size = 14 + Math.random() * 22;
-        const dur = 4 + Math.random() * 4;
+        const size = 12 + Math.random() * 16;
+        const dur = 5 + Math.random() * 4;
         heart.style.cssText = `
             left: ${Math.random() * 100}vw;
             bottom: -40px;
@@ -264,37 +249,32 @@ function createHearts() {
         `;
         document.body.appendChild(heart);
         setTimeout(() => heart.remove(), dur * 1000);
-    }, 250);
+    }, 400);
 }
 
-// ===== FIREWORKS =====
 function firework(x, y) {
-    const count = 24;
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < 16; i++) {
         const spark = document.createElement("div");
         spark.className = "spark";
-        const angle = (i / count) * Math.PI * 2;
-        const dist = 60 + Math.random() * 80;
-        const colors = ["#ff4d6d","#ff80a0","#ffcc00","#ff1a4d","#ffffff"];
+        const angle = (i / 16) * Math.PI * 2;
+        const dist = 40 + Math.random() * 50;
+        const colors = ["#aa5068", "#7a3050", "#d4a0aa", "#cccccc"];
         spark.style.cssText = `
             left: ${x}px; top: ${y}px;
-            background: ${colors[Math.floor(Math.random()*colors.length)]};
-            --tx: ${Math.cos(angle)*dist}px;
-            --ty: ${Math.sin(angle)*dist}px;
-            animation-duration: ${0.6 + Math.random()*0.4}s;
+            background: ${colors[Math.floor(Math.random() * colors.length)]};
+            --tx: ${Math.cos(angle) * dist}px;
+            --ty: ${Math.sin(angle) * dist}px;
+            animation-duration: ${0.7 + Math.random() * 0.4}s;
         `;
         document.body.appendChild(spark);
-        setTimeout(() => spark.remove(), 1100);
+        setTimeout(() => spark.remove(), 1200);
     }
 }
 
 function randomFireworks() {
-    const x = Math.random() * window.innerWidth;
-    const y = Math.random() * window.innerHeight * 0.6;
-    firework(x, y);
+    firework(Math.random() * window.innerWidth, Math.random() * window.innerHeight * 0.6);
 }
 
-// ===== TEXT =====
 const textEl = document.getElementById("text");
 
 function showText(content, duration) {
@@ -308,7 +288,6 @@ function showText(content, duration) {
     });
 }
 
-// ===== SEQUENCE =====
 async function startSequence() {
     await showText("3", 900);
     await showText("2", 900);
@@ -320,12 +299,11 @@ async function startSequence() {
     createStars();
     createHearts();
 
-    // Fireworks burst when birthday message appears
     await showText("HAPPY", 1000);
     await showText("BIRTHDAY", 2200);
-    setInterval(randomFireworks, 600);
-    await showText("TO", 900);
-    await showText("QT", 1800);
+    setInterval(randomFireworks, 800);
+    await showText("TO", 600);
+    await showText("CUTIE", 1500);
     await showText("BARSHAA ❤️", 4000);
 
     document.getElementById("openBookBtn").style.display = "block";
@@ -333,7 +311,6 @@ async function startSequence() {
 
 startSequence();
 
-// ===== BOOK =====
 const overlay = document.getElementById("overlay");
 const btn = document.getElementById("openBookBtn");
 const closeBtn = document.getElementById("closeBook");
