@@ -2,236 +2,317 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Barsha ❤️</title>
-
+<title>For Her</title>
 <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
 body {
-    margin: 0;
     overflow: hidden;
     background: black;
-    font-family: Arial, sans-serif;
+    font-family: 'Georgia', serif;
     color: white;
     text-align: center;
 }
 
-/* Canvas */
 canvas {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
 }
 
-/* Center Text (UPDATED) */
 #text {
     position: absolute;
     width: 100%;
-    top: 40%;
-    font-size: 4em;
+    top: 38%;
+    font-size: 4.5em;
+    font-weight: bold;
     opacity: 0;
-    transition: opacity 0.8s ease;
+    transition: opacity 1s ease;
     z-index: 2;
-
     color: #ff4d6d;
-    text-shadow: 0 0 10px #ff4d6d,
-                 0 0 20px #ff1a4d,
-                 0 0 40px #ff1a4d;
+    text-shadow:
+        0 0 10px #ff4d6d,
+        0 0 30px #ff1a4d,
+        0 0 60px #ff1a4d,
+        0 0 100px #cc0033;
+    letter-spacing: 4px;
 }
 
-/* Stars */
 .star {
     position: absolute;
-    width: 2px;
-    height: 2px;
+    border-radius: 50%;
     background: white;
     animation: twinkle 2s infinite alternate;
 }
 
 @keyframes twinkle {
-    from { opacity: 0.3; }
-    to { opacity: 1; }
+    from { opacity: 0.1; transform: scale(0.8); }
+    to   { opacity: 1;   transform: scale(1.2); }
 }
 
-/* Floating Hearts */
 .heart {
     position: absolute;
-    color: #ff4d6d;
-    font-size: 20px;
-    animation: floatUp linear infinite;
-    opacity: 0.8;
+    animation: floatHeart linear forwards;
+    pointer-events: none;
+    z-index: 1;
 }
 
-@keyframes floatUp {
-    0% {
-        transform: translateY(100vh) scale(1);
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(-10vh) scale(1.5);
-        opacity: 0;
-    }
+@keyframes floatHeart {
+    0%   { transform: translateY(0) scale(1) rotate(0deg);   opacity: 1; }
+    50%  { opacity: 0.8; }
+    100% { transform: translateY(-110vh) scale(1.6) rotate(20deg); opacity: 0; }
 }
 
-/* Book Button */
 #openBookBtn {
     position: absolute;
     bottom: 10%;
     left: 50%;
     transform: translateX(-50%);
-    padding: 12px 24px;
+    padding: 14px 32px;
     font-size: 1.2em;
-    background: #ff4d6d;
+    font-family: 'Georgia', serif;
+    background: linear-gradient(135deg, #ff4d6d, #cc0044);
     border: none;
-    border-radius: 10px;
+    border-radius: 50px;
     color: white;
     cursor: pointer;
     display: none;
     z-index: 3;
+    box-shadow: 0 0 20px #ff4d6d88, 0 0 40px #ff1a4d44;
+    animation: pulse 2s infinite;
+    letter-spacing: 1px;
+}
+
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 20px #ff4d6d88, 0 0 40px #ff1a4d44; }
+    50%       { box-shadow: 0 0 40px #ff4d6dcc, 0 0 80px #ff1a4d88; }
+}
+
+/* Overlay */
+#overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 4;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+#overlay.open {
+    display: flex;
 }
 
 /* Book */
 #book {
-    position: fixed;
-    width: 300px;
-    height: 400px;
-    background: #fff;
-    color: black;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 0 20px rgba(255,255,255,0.5);
-    transition: transform 0.5s ease;
+    width: 320px;
+    background: linear-gradient(160deg, #fff8f9, #ffe0e8);
+    color: #1a0010;
+    border-radius: 16px;
+    padding: 32px 28px;
+    box-shadow:
+        0 0 40px #ff4d6d88,
+        0 8px 40px rgba(0,0,0,0.5);
+    transform: scale(0.5);
+    opacity: 0;
+    transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s ease;
+    position: relative;
     z-index: 5;
 }
 
-#book.open {
-    transform: translate(-50%, -50%) scale(1);
+#overlay.open #book {
+    transform: scale(1);
+    opacity: 1;
 }
 
 #book h2 {
-    margin-top: 0;
+    font-size: 1.6em;
+    color: #cc0044;
+    margin-bottom: 16px;
+    text-shadow: 0 0 8px #ff4d6d44;
+}
+
+#book p {
+    font-size: 1.05em;
+    line-height: 1.8;
+    color: #3a0020;
+}
+
+#book .divider {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ff4d6d, transparent);
+    margin: 16px auto;
+    border-radius: 2px;
 }
 
 #closeBook {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 12px; right: 14px;
     cursor: pointer;
-    font-size: 1.2em;
+    font-size: 1.1em;
+    color: #cc0044;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+#closeBook:hover { opacity: 1; }
+
+/* Firework sparks */
+.spark {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 2;
+    animation: sparkFly linear forwards;
+}
+
+@keyframes sparkFly {
+    0%   { transform: translate(0,0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
 }
 </style>
 </head>
 
 <body>
-
 <canvas id="matrix"></canvas>
 <div id="text"></div>
+<button id="openBookBtn">Open </button>
 
-<button id="openBookBtn">Open Message 💌</button>
-
-<div id="book">
-    <div id="closeBook">❌</div>
-    <h2>❤️</h2>
-    <p>
-        chasmiss cutiepie! 🎂🎉<br><br>
-        birthday ta aako chaina tei pani draftt haiiii
-        💖
-    </p>
+<div id="overlay">
+    <div id="book">
+        <div id="closeBook">✕</div>
+        <h2>For You ❤️</h2>
+        <div class="divider"></div>
+        <p>
+            👀👀
+        </p>
+        <div class="divider"></div>
+    </div>
 </div>
 
 <script>
-// ================= MATRIX =================
+// ===== MATRIX =====
 const canvas = document.getElementById("matrix");
 const ctx = canvas.getContext("2d");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-const words = ["BB", "❤️"];
-const fontSize = 10;
-const columns = canvas.width / fontSize;
-
-const drops = [];
-for (let i = 0; i < columns; i++) {
-    drops[i] = Math.random() * canvas.height;
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 }
+resize();
+window.addEventListener("resize", resize);
 
+const words = ["BB", "❤️", "🎂", "✨"];
+const fontSize = 14;
+let columns = Math.floor(canvas.width / fontSize);
+let drops = Array.from({ length: columns }, () => Math.random() * 50);
 let matrixRunning = true;
 
 function drawMatrix() {
     if (!matrixRunning) return;
-
-    ctx.fillStyle = "rgba(0,0,0,0.05)";
+    ctx.fillStyle = "rgba(0,0,0,0.06)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    ctx.fillStyle = "#ff4d6d";
     ctx.font = fontSize + "px monospace";
 
     for (let i = 0; i < drops.length; i++) {
-        let text = words[Math.floor(Math.random() * words.length)];
+        const colors = ["#ff4d6d", "#ff1a4d", "#ff80a0", "#ffaabb"];
+        ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+        const text = words[Math.floor(Math.random() * words.length)];
         ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.95) {
-            drops[i] = 0;
-        }
-
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.95) drops[i] = 0;
         drops[i]++;
     }
 }
 
-setInterval(drawMatrix, 50);
+setInterval(drawMatrix, 45);
 
-// ================= STARS =================
+// ===== STARS =====
 function createStars() {
-    for (let i = 0; i < 120; i++) {
-        let star = document.createElement("div");
+    for (let i = 0; i < 160; i++) {
+        const star = document.createElement("div");
         star.className = "star";
-        star.style.top = Math.random() * 100 + "vh";
-        star.style.left = Math.random() * 100 + "vw";
+        const size = Math.random() * 2.5 + 0.5;
+        star.style.cssText = `
+            top: ${Math.random() * 100}vh;
+            left: ${Math.random() * 100}vw;
+            width: ${size}px;
+            height: ${size}px;
+            animation-delay: ${Math.random() * 3}s;
+            animation-duration: ${1.5 + Math.random() * 2}s;
+        `;
         document.body.appendChild(star);
     }
 }
 
-// ================= HEARTS =================
+// ===== HEARTS =====
+const heartEmojis = ["❤️", "🩷", "💕", "💖", "💗", "💓"];
+
 function createHearts() {
     setInterval(() => {
         const heart = document.createElement("div");
         heart.className = "heart";
-        heart.innerHTML = "❤️";
-
-        heart.style.left = Math.random() * 100 + "vw";
-        heart.style.fontSize = (15 + Math.random() * 20) + "px";
-        heart.style.animationDuration = (3 + Math.random() * 3) + "s";
-
+        heart.innerHTML = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+        const size = 14 + Math.random() * 22;
+        const dur = 4 + Math.random() * 4;
+        heart.style.cssText = `
+            left: ${Math.random() * 100}vw;
+            bottom: -40px;
+            font-size: ${size}px;
+            animation-duration: ${dur}s;
+        `;
         document.body.appendChild(heart);
-
-        setTimeout(() => {
-            heart.remove();
-        }, 6000);
-    }, 300);
+        setTimeout(() => heart.remove(), dur * 1000);
+    }, 250);
 }
 
-// ================= TEXT =================
+// ===== FIREWORKS =====
+function firework(x, y) {
+    const count = 24;
+    for (let i = 0; i < count; i++) {
+        const spark = document.createElement("div");
+        spark.className = "spark";
+        const angle = (i / count) * Math.PI * 2;
+        const dist = 60 + Math.random() * 80;
+        const colors = ["#ff4d6d","#ff80a0","#ffcc00","#ff1a4d","#ffffff"];
+        spark.style.cssText = `
+            left: ${x}px; top: ${y}px;
+            background: ${colors[Math.floor(Math.random()*colors.length)]};
+            --tx: ${Math.cos(angle)*dist}px;
+            --ty: ${Math.sin(angle)*dist}px;
+            animation-duration: ${0.6 + Math.random()*0.4}s;
+        `;
+        document.body.appendChild(spark);
+        setTimeout(() => spark.remove(), 1100);
+    }
+}
+
+function randomFireworks() {
+    const x = Math.random() * window.innerWidth;
+    const y = Math.random() * window.innerHeight * 0.6;
+    firework(x, y);
+}
+
+// ===== TEXT =====
 const textEl = document.getElementById("text");
 
 function showText(content, duration) {
     return new Promise(resolve => {
         textEl.innerHTML = content;
         textEl.style.opacity = 1;
-
         setTimeout(() => {
             textEl.style.opacity = 0;
-            setTimeout(resolve, 800);
+            setTimeout(resolve, 900);
         }, duration);
     });
 }
 
-// ================= SEQUENCE =================
+// ===== SEQUENCE =====
 async function startSequence() {
-    await showText("3", 1000);
-    await showText("2", 1000);
-    await showText("1", 1000);
+    await showText("3", 900);
+    await showText("2", 900);
+    await showText("1", 900);
 
     matrixRunning = false;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -239,10 +320,12 @@ async function startSequence() {
     createStars();
     createHearts();
 
+    // Fireworks burst when birthday message appears
     await showText("HAPPY", 1000);
-    await showText("EARLY BIRTHDAY", 2000);
-    await showText("TO", 1000);
-    await showText("QT", 2000);
+    await showText("BIRTHDAY", 2200);
+    setInterval(randomFireworks, 600);
+    await showText("TO", 900);
+    await showText("QT", 1800);
     await showText("BARSHAA ❤️", 4000);
 
     document.getElementById("openBookBtn").style.display = "block";
@@ -250,20 +333,14 @@ async function startSequence() {
 
 startSequence();
 
-// ================= BOOK =================
-const book = document.getElementById("book");
+// ===== BOOK =====
+const overlay = document.getElementById("overlay");
 const btn = document.getElementById("openBookBtn");
-const close = document.getElementById("closeBook");
+const closeBtn = document.getElementById("closeBook");
 
-btn.onclick = () => book.classList.add("open");
-close.onclick = () => book.classList.remove("open");
-
-// ================= RESPONSIVE =================
-window.addEventListener("resize", () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-});
+btn.onclick = () => overlay.classList.add("open");
+closeBtn.onclick = () => overlay.classList.remove("open");
+overlay.onclick = (e) => { if (e.target === overlay) overlay.classList.remove("open"); }
 </script>
-
 </body>
 </html>
