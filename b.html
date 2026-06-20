@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For Her</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    overflow: hidden;
+    background: #0a0005;
+    font-family: 'Georgia', serif;
+    color: white;
+    text-align: center;
+}
+
+canvas {
+    position: absolute;
+    top: 0; left: 0;
+}
+
+#text {
+    position: absolute;
+    width: 100%;
+    top: 38%;
+    font-size: 4.5em;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 1s ease;
+    z-index: 2;
+    color: #d4607a;
+    text-shadow:
+        0 0 8px #c0506888,
+        0 0 20px #99334455;
+    letter-spacing: 4px;
+}
+
+.star {
+    position: absolute;
+    border-radius: 50%;
+    background: #ccb8c0;
+    animation: twinkle 2s infinite alternate;
+}
+
+@keyframes twinkle {
+    from { opacity: 0.1; transform: scale(0.8); }
+    to   { opacity: 0.6; transform: scale(1.1); }
+}
+
+.heart {
+    position: absolute;
+    animation: floatHeart linear forwards;
+    pointer-events: none;
+    z-index: 1;
+    filter: saturate(0.5) brightness(0.8);
+}
+
+@keyframes floatHeart {
+    0%   { transform: translateY(0) scale(1);   opacity: 0.7; }
+    50%  { opacity: 0.5; }
+    100% { transform: translateY(-110vh) scale(1.4); opacity: 0; }
+}
+
+#openBookBtn {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 14px 32px;
+    font-size: 1.1em;
+    font-family: 'Georgia', serif;
+    background: #7a2035;
+    border: 1px solid #aa4060;
+    border-radius: 50px;
+    color: #f0c0cc;
+    cursor: pointer;
+    display: none;
+    z-index: 3;
+    letter-spacing: 1px;
+    transition: background 0.3s;
+}
+
+#openBookBtn:hover {
+    background: #9a2a45;
+}
+
+#overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 4;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(3px);
+}
+
+#overlay.open {
+    display: flex;
+}
+
+#book {
+    width: 320px;
+    background: #1a0810;
+    color: #e8c0cc;
+    border: 1px solid #6a2840;
+    border-radius: 16px;
+    padding: 32px 28px;
+    box-shadow: 0 4px 30px rgba(180,60,90,0.15);
+    transform: scale(0.5);
+    opacity: 0;
+    transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s ease;
+    position: relative;
+    z-index: 5;
+}
+
+#overlay.open #book {
+    transform: scale(1);
+    opacity: 1;
+}
+
+#book h2 {
+    font-size: 1.5em;
+    color: #d4607a;
+    margin-bottom: 16px;
+}
+
+#book p {
+    font-size: 1.05em;
+    line-height: 1.8;
+    color: #c09098;
+}
+
+#book .divider {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #7a3050, transparent);
+    margin: 16px auto;
+}
+
+#closeBook {
+    position: absolute;
+    top: 12px; right: 14px;
+    cursor: pointer;
+    font-size: 1em;
+    color: #a06070;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+#closeBook:hover { opacity: 1; }
+
+.spark {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 2;
+    animation: sparkFly linear forwards;
+}
+
+@keyframes sparkFly {
+    0%   { transform: translate(0,0) scale(1); opacity: 0.8; }
+    100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+<canvas id="matrix"></canvas>
+<div id="text"></div>
+<button id="openBookBtn">Open 💌</button>
+
+<div id="overlay">
+    <div id="book">
+        <div id="closeBook">✕</div>
+        <h2>haha</h2>
+        <div class="divider"></div>
+        <p>👀i love you to the moon and back bb👀</p>
+        <div class="divider"></div>
+    </div>
+</div>
+
+<script>
+const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
+
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+const words = ["BB", "❤️", "✨"];
+const fontSize = 12;
+let drops = Array.from({ length: Math.floor(canvas.width / fontSize) }, () => Math.random() * 50);
+let matrixRunning = true;
+
+function drawMatrix() {
+    if (!matrixRunning) return;
+    ctx.fillStyle = "rgba(10,0,5,0.08)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.font = fontSize + "px monospace";
+
+    for (let i = 0; i < drops.length; i++) {
+        // Muted, darker pinks
+        const colors = ["#8a3048", "#6a2035", "#aa5068", "#7a3550"];
+        ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+        ctx.fillText(words[Math.floor(Math.random() * words.length)], i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.95) drops[i] = 0;
+        drops[i]++;
+    }
+}
+
+setInterval(drawMatrix, 50);
+
+function createStars() {
+    for (let i = 0; i < 100; i++) {
+        const star = document.createElement("div");
+        star.className = "star";
+        const size = Math.random() * 1.8 + 0.4;
+        star.style.cssText = `
+            top: ${Math.random() * 100}vh;
+            left: ${Math.random() * 100}vw;
+            width: ${size}px; height: ${size}px;
+            animation-delay: ${Math.random() * 3}s;
+            animation-duration: ${2 + Math.random() * 2}s;
+        `;
+        document.body.appendChild(star);
+    }
+}
+
+// Only simple hearts, desaturated
+const heartEmojis = ["❤️", "🩷", "💗"];
+
+function createHearts() {
+    setInterval(() => {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerHTML = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+        const size = 12 + Math.random() * 16;
+        const dur = 5 + Math.random() * 4;
+        heart.style.cssText = `
+            left: ${Math.random() * 100}vw;
+            bottom: -40px;
+            font-size: ${size}px;
+            animation-duration: ${dur}s;
+        `;
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), dur * 1000);
+    }, 400);
+}
+
+function firework(x, y) {
+    for (let i = 0; i < 16; i++) {
+        const spark = document.createElement("div");
+        spark.className = "spark";
+        const angle = (i / 16) * Math.PI * 2;
+        const dist = 40 + Math.random() * 50;
+        const colors = ["#aa5068", "#7a3050", "#d4a0aa", "#cccccc"];
+        spark.style.cssText = `
+            left: ${x}px; top: ${y}px;
+            background: ${colors[Math.floor(Math.random() * colors.length)]};
+            --tx: ${Math.cos(angle) * dist}px;
+            --ty: ${Math.sin(angle) * dist}px;
+            animation-duration: ${0.7 + Math.random() * 0.4}s;
+        `;
+        document.body.appendChild(spark);
+        setTimeout(() => spark.remove(), 1200);
+    }
+}
+
+function randomFireworks() {
+    firework(Math.random() * window.innerWidth, Math.random() * window.innerHeight * 0.6);
+}
+
+const textEl = document.getElementById("text");
+
+function showText(content, duration) {
+    return new Promise(resolve => {
+        textEl.innerHTML = content;
+        textEl.style.opacity = 1;
+        setTimeout(() => {
+            textEl.style.opacity = 0;
+            setTimeout(resolve, 900);
+        }, duration);
+    });
+}
+
+async function startSequence() {
+    await showText("3", 900);
+    await showText("2", 900);
+    await showText("1", 900);
+
+    matrixRunning = false;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    createStars();
+    createHearts();
+
+    await showText("HAPPY", 1000);
+    await showText("BIRTHDAY", 2200);
+    setInterval(randomFireworks, 800);
+    await showText("TO", 600);
+    await showText("CUTIE", 1500);
+    await showText("BARSHAA ❤️", 4000);
+
+    document.getElementById("openBookBtn").style.display = "block";
+}
+
+startSequence();
+
+const overlay = document.getElementById("overlay");
+const btn = document.getElementById("openBookBtn");
+const closeBtn = document.getElementById("closeBook");
+
+btn.onclick = () => overlay.classList.add("open");
+closeBtn.onclick = () => overlay.classList.remove("open");
+overlay.onclick = (e) => { if (e.target === overlay) overlay.classList.remove("open"); }
+</script>
+</body>
+</html>
