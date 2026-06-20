@@ -2,16 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Love youu</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Her - Birthday Special</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
     overflow: hidden;
-    background: #0a0005;
+    background: #000000;
     font-family: 'Georgia', serif;
     color: white;
     text-align: center;
+    width: 100vw;
+    height: 100vh;
 }
 
 canvas {
@@ -22,29 +25,47 @@ canvas {
 #text {
     position: absolute;
     width: 100%;
-    top: 38%;
-    font-size: 4.5em;
+    top: 35%;
+    font-size: clamp(2em, 8vw, 4.5em);
     font-weight: bold;
     opacity: 0;
-    transition: opacity 1s ease;
+    transition: opacity 1s cubic-bezier(0.34,1.56,0.64,1);
     z-index: 2;
-    color: #d4607a;
+    color: #e8b04a;
     text-shadow:
-        0 0 8px #c0506888,
-        0 0 20px #99334455;
-    letter-spacing: 4px;
+        0 0 20px #e8b04a66,
+        0 0 40px #c4862baa,
+        0 0 60px #8a5a2288;
+    letter-spacing: 2px;
+}
+
+@keyframes textGlow {
+    0%, 100% { text-shadow: 0 0 10px #88888888, 0 0 25px #55555555; }
+    50% { text-shadow: 0 0 15px #99999999, 0 0 35px #66666666, 0 0 50px #44444444; }
+}
+
+.matrix-glow {
+    position: absolute;
+    pointer-events: none;
+    z-index: 0;
+}
+
+@keyframes matrixFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .star {
     position: absolute;
     border-radius: 50%;
-    background: #ccb8c0;
+    background: radial-gradient(circle at 30% 30%, #fff, #a0a4aa);
     animation: twinkle 2s infinite alternate;
+    box-shadow: 0 0 10px rgba(150, 150, 160, 0.4);
 }
 
 @keyframes twinkle {
     from { opacity: 0.1; transform: scale(0.8); }
-    to   { opacity: 0.6; transform: scale(1.1); }
+    to   { opacity: 0.8; transform: scale(1.2); }
 }
 
 .heart {
@@ -52,107 +73,181 @@ canvas {
     animation: floatHeart linear forwards;
     pointer-events: none;
     z-index: 1;
-    filter: saturate(0.5) brightness(0.8);
+    filter: saturate(0.5) brightness(0.95);
+    font-size: 2em;
 }
 
 @keyframes floatHeart {
-    0%   { transform: translateY(0) scale(1);   opacity: 0.7; }
-    50%  { opacity: 0.5; }
-    100% { transform: translateY(-110vh) scale(1.4); opacity: 0; }
+    0%   { transform: translateY(0) scale(1) rotate(0deg);   opacity: 0.8; }
+    50%  { opacity: 0.6; }
+    100% { transform: translateY(-120vh) scale(1.3) rotate(10deg); opacity: 0; }
 }
 
-#openBookBtn {
+#controls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+.control-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(50, 45, 35, 0.6);
+    border: 1px solid #8a6a40;
+    color: #e0d0b0;
+    cursor: pointer;
+    font-size: 1.2em;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+}
+
+.control-btn:hover {
+    background: rgba(80, 65, 45, 0.8);
+    transform: scale(1.1);
+}
+
+#actionButtons {
     position: absolute;
     bottom: 10%;
     left: 50%;
     transform: translateX(-50%);
-    padding: 14px 32px;
-    font-size: 1.1em;
-    font-family: 'Georgia', serif;
-    background: #7a2035;
-    border: 1px solid #aa4060;
-    border-radius: 50px;
-    color: #f0c0cc;
-    cursor: pointer;
-    display: none;
+    display: flex;
+    gap: 15px;
     z-index: 3;
-    letter-spacing: 1px;
-    transition: background 0.3s;
 }
 
-#openBookBtn:hover {
-    background: #9a2a45;
+.action-btn {
+    padding: 12px 28px;
+    font-size: 1em;
+    font-family: 'Georgia', serif;
+    background: #3a2f22;
+    border: 1.5px solid #8a6a40;
+    border-radius: 50px;
+    color: #e0d0b0;
+    cursor: pointer;
+    display: none;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
+}
+
+.action-btn:hover {
+    background: #4a3c2a;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(138, 106, 64, 0.3);
+}
+
+.action-btn:active {
+    transform: translateY(0);
 }
 
 #overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.85);
     z-index: 4;
     display: none;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(5px);
 }
 
 #overlay.open {
     display: flex;
 }
 
-#book {
-    width: 320px;
-    background: #1a0810;
-    color: #e8c0cc;
-    border: 1px solid #6a2840;
+#content {
+    width: 90%;
+    max-width: 500px;
+    background: #14110c;
+    color: #d8cbb8;
+    border: 1px solid #4a3c2a;
     border-radius: 16px;
-    padding: 32px 28px;
-    box-shadow: 0 4px 30px rgba(180,60,90,0.15);
+    box-shadow: 0 4px 40px rgba(120,95,55,0.25);
     transform: scale(0.5);
     opacity: 0;
     transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s ease;
     position: relative;
     z-index: 5;
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
-#overlay.open #book {
+#overlay.open #content {
     transform: scale(1);
     opacity: 1;
 }
 
-#book h2 {
-    font-size: 1.5em;
-    color: #d4607a;
-    margin-bottom: 16px;
+#content h2 {
+    font-size: 1.8em;
+    color: #c4862b;
+    margin-bottom: 10px;
 }
 
-#book p {
+#content p {
     font-size: 1.05em;
     line-height: 1.8;
-    color: #c09098;
+    color: #b8a890;
+    margin-bottom: 12px;
 }
 
-#book .divider {
+#content .divider {
     width: 60px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, #7a3050, transparent);
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #c4862b, transparent);
     margin: 16px auto;
 }
 
-#closeBook {
+.close-btn {
     position: absolute;
     top: 12px; right: 14px;
     cursor: pointer;
-    font-size: 1em;
-    color: #a06070;
+    font-size: 1.5em;
+    color: #8a7860;
     opacity: 0.6;
     transition: opacity 0.2s;
 }
-#closeBook:hover { opacity: 1; }
+.close-btn:hover { opacity: 1; }
+
+#gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 0 20px 20px;
+}
+
+.gallery-item {
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, #4a3c2a, #2a2218);
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    font-size: 3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gallery-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(196, 134, 43, 0.3);
+}
 
 .spark {
     position: absolute;
-    width: 3px;
-    height: 3px;
+    width: 4px;
+    height: 4px;
     border-radius: 50%;
     pointer-events: none;
     z-index: 2;
@@ -160,30 +255,148 @@ canvas {
 }
 
 @keyframes sparkFly {
-    0%   { transform: translate(0,0) scale(1); opacity: 0.8; }
+    0%   { transform: translate(0,0) scale(1); opacity: 0.9; }
     100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+
+.confetti {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes confettiFall {
+    to {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(74, 60, 42, 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c4862b;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #8a6a40;
+}
+
+@media (max-width: 600px) {
+    #text { top: 40%; }
+    .action-btn { padding: 10px 20px; font-size: 0.95em; }
 }
 </style>
 </head>
 
 <body>
+<!--
+    ============================================================
+    HOW TO ADD YOUR OWN MUSIC AND PHOTOS
+    ============================================================
+
+    MUSIC:
+    1. Put your music file (mp3) in the SAME FOLDER as this HTML file.
+    2. Change the src below from "music.mp3" to your file's name,
+       e.g. src="our-song.mp3"
+    3. Music now autoplays muted on load (browsers block audio with
+       sound until the user interacts with the page), then unmutes
+       on the very first click/tap anywhere on the page. So it will
+       genuinely start playing immediately when the page opens, and
+       become audible the instant she clicks/taps anything.
+
+    PHOTOS:
+    1. Put your photo files (jpg/png) in the SAME FOLDER as this file.
+    2. Scroll down to the "gallery-item" divs in the HTML below.
+       Each one currently looks like this:
+           <div class="gallery-item" title="Our first photo together">💑</div>
+       Replace it with a background image like this:
+           <div class="gallery-item" title="Our first photo together"
+                style="background-image:url('photo1.jpg')"></div>
+       (delete the emoji in the middle, the photo fills the tile instead)
+    3. Repeat for each of the 6 tiles, using photo1.jpg, photo2.jpg, etc.
+    4. You can have more or fewer than 6 tiles — just copy/paste the
+       gallery-item line and change the filename for more.
+    ============================================================
+-->
+<audio id="bgMusic" style="display:none;" loop autoplay muted>
+    <source src="bday.mp3" type="audio/mpeg">
+</audio>
+
 <canvas id="matrix"></canvas>
 <div id="text"></div>
-<button id="openBookBtn">Open 💌</button>
+
+<div id="controls">
+    <button class="control-btn" id="musicBtn" title="Toggle music" style="display:none;">🎵</button>
+    <button class="control-btn" id="particleBtn" title="More effects">✨</button>
+</div>
+
+<div id="actionButtons">
+    <button class="action-btn" id="openMessageBtn">Message 💌</button>
+    <button class="action-btn" id="openGalleryBtn">Memories 📸</button>
+</div>
 
 <div id="overlay">
-    <div id="book">
-        <div id="closeBook">✕</div>
-        <h2>haha</h2>
-        <div class="divider"></div>
-        <p>👀i love you to the moon and back bb👀</p>
-        <div class="divider"></div>
+    <div id="content" style="padding: 30px 20px;">
+        <div class="close-btn" id="closeOverlay">✕</div>
+        <div id="messageSection" style="display:none;">
+            <h2>For You</h2>
+            <div class="divider"></div>
+            <p>Happy Birthday to the most incredible person I know. You light up my world in ways I never thought possible. Every moment with you feels like a dream I never want to wake up from.</p>
+            <div class="divider"></div>
+            <p>Your smile brightens my darkest days, and your laugh is the sweetest melody to my ears. You have this amazing way of making everything feel right, even when the world around us feels chaotic. Thank you for being the person who understands me without words.</p>
+            <div class="divider"></div>
+            <p>I fall in love with you more and more each day. Thank you for your kindness, your strength, and the unconditional love you give me. You are my greatest blessing, my forever person, and my home.</p>
+            <div class="divider"></div>
+            <p style="font-size: 0.95em; color: #c4862b; font-weight: bold;">I love you to the moon and back, always and forever. 💕</p>
+        </div>
+        <div id="gallerySection" style="display:none;">
+            <h2>Our Memories</h2>
+            <div class="divider"></div>
+            <!--
+                Replace each gallery-item below with your real photos.
+                See the instructions comment near the top of <body> for
+                exact steps. Example once you have photo1.jpg ... photo6.jpg:
+
+                <div class="gallery-item" title="Our first photo together"
+                     style="background-image:url('photo1.jpg')"></div>
+            -->
+            <div id="gallery">
+                <div class="gallery-item" title="Our first photo together">💑</div>
+                <div class="gallery-item" title="Adventure time">🗻</div>
+                <div class="gallery-item" title="Dinner dates">🍽️</div>
+                <div class="gallery-item" title="Late night talks">🌙</div>
+                <div class="gallery-item" title="Fun moments">🎉</div>
+                <div class="gallery-item" title="Forever yours">❤️</div>
+            </div>
+            <p style="font-size: 0.9em; margin-top: 20px; color: #a8987c;">Each moment with you is a memory I treasure forever 💕</p>
+        </div>
     </div>
 </div>
 
 <script>
+const NAME = "BARSHAA";
+
+const CONFIG = {
+    name: NAME,
+    colors: ["#c4862b", "#e8b04a", "#d4923a", "#b8742a", "#8a5a22", "#a87830"],
+    heartEmojis: ["❤️", "🩷", "💗", "💕", "🧡", "💖"],
+    matrixWords: ["BB", "❤️", "✨", "💕", "💗", "🩷", "💖", "✨"],
+    countdownTexts: ["3", "2", "1"],
+    mainTexts: ["HAPPY", "BIRTHDAY", "TO", "MY CUTIE", NAME + " ❤️"],
+    mainDurations: [1000, 2200, 600, 1500, 4000]
+};
+
 const canvas = document.getElementById("matrix");
 const ctx = canvas.getContext("2d");
+let soundEnabled = false;
 
 function resize() {
     canvas.width = window.innerWidth;
@@ -192,23 +405,27 @@ function resize() {
 resize();
 window.addEventListener("resize", resize);
 
-const words = ["BB", "❤️", "✨"];
 const fontSize = 12;
 let drops = Array.from({ length: Math.floor(canvas.width / fontSize) }, () => Math.random() * 50);
 let matrixRunning = true;
 
 function drawMatrix() {
     if (!matrixRunning) return;
-    ctx.fillStyle = "rgba(10,0,5,0.08)";
+    
+    ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.font = fontSize + "px monospace";
+    ctx.font = "bold " + fontSize + "px monospace";
 
     for (let i = 0; i < drops.length; i++) {
-        // Muted, darker pinks
-        const colors = ["#8a3048", "#6a2035", "#aa5068", "#7a3550"];
-        ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
-        ctx.fillText(words[Math.floor(Math.random() * words.length)], i * fontSize, drops[i] * fontSize);
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.95) drops[i] = 0;
+        ctx.fillStyle = CONFIG.colors[i % CONFIG.colors.length];
+        ctx.globalAlpha = 0.8;
+        
+        const word = CONFIG.matrixWords[Math.floor(Math.random() * CONFIG.matrixWords.length)];
+        ctx.fillText(word, i * fontSize, drops[i] * fontSize);
+        
+        ctx.globalAlpha = 1;
+        
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.92) drops[i] = 0;
         drops[i]++;
     }
 }
@@ -216,58 +433,75 @@ function drawMatrix() {
 setInterval(drawMatrix, 50);
 
 function createStars() {
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 120; i++) {
         const star = document.createElement("div");
         star.className = "star";
-        const size = Math.random() * 1.8 + 0.4;
+        const size = Math.random() * 2.5 + 0.5;
         star.style.cssText = `
             top: ${Math.random() * 100}vh;
             left: ${Math.random() * 100}vw;
             width: ${size}px; height: ${size}px;
             animation-delay: ${Math.random() * 3}s;
-            animation-duration: ${2 + Math.random() * 2}s;
+            animation-duration: ${2 + Math.random() * 2.5}s;
         `;
         document.body.appendChild(star);
     }
 }
 
-// Only simple hearts, desaturated
-const heartEmojis = ["❤️", "🩷", "💗"];
-
 function createHearts() {
     setInterval(() => {
-        const heart = document.createElement("div");
-        heart.className = "heart";
-        heart.innerHTML = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
-        const size = 12 + Math.random() * 16;
-        const dur = 5 + Math.random() * 4;
-        heart.style.cssText = `
-            left: ${Math.random() * 100}vw;
-            bottom: -40px;
-            font-size: ${size}px;
-            animation-duration: ${dur}s;
-        `;
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), dur * 1000);
-    }, 400);
+        if (!matrixRunning) {
+            const heart = document.createElement("div");
+            heart.className = "heart";
+            heart.innerHTML = CONFIG.heartEmojis[Math.floor(Math.random() * CONFIG.heartEmojis.length)];
+            const size = 14 + Math.random() * 18;
+            const dur = 5 + Math.random() * 4;
+            heart.style.cssText = `
+                left: ${Math.random() * 100}vw;
+                bottom: -40px;
+                font-size: ${size}px;
+                animation-duration: ${dur}s;
+            `;
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), dur * 1000);
+        }
+    }, 350);
 }
 
 function firework(x, y) {
-    for (let i = 0; i < 16; i++) {
+    for (let i = 0; i < 20; i++) {
         const spark = document.createElement("div");
         spark.className = "spark";
-        const angle = (i / 16) * Math.PI * 2;
-        const dist = 40 + Math.random() * 50;
-        const colors = ["#aa5068", "#7a3050", "#d4a0aa", "#cccccc"];
+        const angle = (i / 20) * Math.PI * 2;
+        const dist = 50 + Math.random() * 60;
         spark.style.cssText = `
             left: ${x}px; top: ${y}px;
-            background: ${colors[Math.floor(Math.random() * colors.length)]};
+            background: ${CONFIG.colors[Math.floor(Math.random() * CONFIG.colors.length)]};
             --tx: ${Math.cos(angle) * dist}px;
             --ty: ${Math.sin(angle) * dist}px;
-            animation-duration: ${0.7 + Math.random() * 0.4}s;
+            animation-duration: ${0.8 + Math.random() * 0.5}s;
         `;
         document.body.appendChild(spark);
-        setTimeout(() => spark.remove(), 1200);
+        setTimeout(() => spark.remove(), 1300);
+    }
+}
+
+function createConfetti() {
+    const emojis = ["✨", "💕", "❤️", "💗", "🎉"];
+    for (let i = 0; i < 30; i++) {
+        const confetti = document.createElement("div");
+        confetti.className = "confetti";
+        confetti.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+        const duration = 3 + Math.random() * 2;
+        const delay = Math.random() * 0.5;
+        confetti.style.cssText = `
+            left: ${Math.random() * 100}vw;
+            top: -20px;
+            font-size: ${1.2 + Math.random() * 0.8}em;
+            animation: confettiFall ${duration}s linear ${delay}s forwards;
+        `;
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), (duration + delay) * 1000);
     }
 }
 
@@ -276,6 +510,14 @@ function randomFireworks() {
 }
 
 const textEl = document.getElementById("text");
+const overlay = document.getElementById("overlay");
+const closeBtn = document.getElementById("closeOverlay");
+const msgBtn = document.getElementById("openMessageBtn");
+const galBtn = document.getElementById("openGalleryBtn");
+const particleBtn = document.getElementById("particleBtn");
+const musicBtn = document.getElementById("musicBtn");
+const bgMusic = document.getElementById("bgMusic");
+let musicPlaying = false;
 
 function showText(content, duration) {
     return new Promise(resolve => {
@@ -289,9 +531,9 @@ function showText(content, duration) {
 }
 
 async function startSequence() {
-    await showText("3", 900);
-    await showText("2", 900);
-    await showText("1", 900);
+    for (const text of CONFIG.countdownTexts) {
+        await showText(text, 900);
+    }
 
     matrixRunning = false;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -299,25 +541,77 @@ async function startSequence() {
     createStars();
     createHearts();
 
-    await showText("HAPPY", 1000);
-    await showText("BIRTHDAY", 2200);
-    setInterval(randomFireworks, 800);
-    await showText("TO", 600);
-    await showText("MY CUTIE", 1500);
-    await showText("BARSHAA ❤️", 4000);
+    for (let i = 0; i < CONFIG.mainTexts.length; i++) {
+        await showText(CONFIG.mainTexts[i], CONFIG.mainDurations[i]);
+    }
 
-    document.getElementById("openBookBtn").style.display = "block";
+    const fireworkInterval = setInterval(randomFireworks, 800);
+
+    setTimeout(() => {
+        clearInterval(fireworkInterval);
+        document.getElementById("openMessageBtn").style.display = "block";
+        document.getElementById("openGalleryBtn").style.display = "block";
+        document.getElementById("musicBtn").style.display = "flex";
+    }, 1000);
 }
 
 startSequence();
 
-const overlay = document.getElementById("overlay");
-const btn = document.getElementById("openBookBtn");
-const closeBtn = document.getElementById("closeBook");
+// Music: starts muted+autoplay immediately on page load (see <audio> tag).
+// On the very first click/tap anywhere, we unmute it so sound becomes
+// audible right away, without needing to press the music button.
+musicBtn.innerHTML = "⏸";
+musicPlaying = true;
 
-btn.onclick = () => overlay.classList.add("open");
+document.addEventListener('click', () => {
+    if (musicPlaying) {
+        bgMusic.muted = false;
+        bgMusic.play().catch(err => console.log("Music error:", err));
+    }
+}, { once: true });
+
+msgBtn.onclick = () => {
+    document.getElementById("messageSection").style.display = "block";
+    document.getElementById("gallerySection").style.display = "none";
+    overlay.classList.add("open");
+};
+
+galBtn.onclick = () => {
+    document.getElementById("messageSection").style.display = "none";
+    document.getElementById("gallerySection").style.display = "block";
+    overlay.classList.add("open");
+};
+
 closeBtn.onclick = () => overlay.classList.remove("open");
-overlay.onclick = (e) => { if (e.target === overlay) overlay.classList.remove("open"); }
+overlay.onclick = (e) => { if (e.target === overlay) overlay.classList.remove("open"); };
+
+particleBtn.onclick = () => {
+    createConfetti();
+    for (let i = 0; i < 5; i++) {
+        setTimeout(() => firework(Math.random() * window.innerWidth, Math.random() * window.innerHeight * 0.5), i * 100);
+    }
+};
+
+musicBtn.onclick = () => {
+    if (musicPlaying) {
+        bgMusic.pause();
+        musicBtn.innerHTML = "🎵";
+        musicPlaying = false;
+    } else {
+        bgMusic.muted = false;
+        bgMusic.play().catch(err => console.log("Music error:", err));
+        musicBtn.innerHTML = "⏸";
+        musicPlaying = true;
+    }
+};
+
+const galleryItems = document.querySelectorAll(".gallery-item");
+galleryItems.forEach(item => {
+    item.onclick = () => {
+        firework(event.clientX, event.clientY);
+        createConfetti();
+    };
+});
 </script>
 </body>
 </html>
